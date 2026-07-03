@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { ItemCard } from "@/components/item-card";
 import { ItemFormDialog } from "@/components/item-form-dialog";
 import { ItemImage } from "@/components/item-image";
+import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion";
 import { ShopDialog } from "@/components/shop-dialog";
 import { CATALOG, TRENDS_2026 } from "@/lib/catalog";
 import { ARCHETYPES, archetypeFor } from "@/lib/mbti";
@@ -264,13 +265,15 @@ export default function HomePage() {
 
       {/* ---------- BENTO FEATURES ---------- */}
       <section className="mt-20 sm:mt-28">
-        <h2 className="font-display max-w-2xl text-3xl font-bold tracking-tight sm:text-5xl">
-          A stylist that actually
-          <em className="ice-text not-italic"> knows you</em>.
-        </h2>
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Reveal>
+          <h2 className="font-display max-w-2xl text-3xl font-bold tracking-tight sm:text-5xl">
+            A stylist that actually
+            <em className="ice-text not-italic"> knows you</em>.
+          </h2>
+        </Reveal>
+        <StaggerGroup className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" amount={0.1}>
           {FEATURES.map((f) => (
-            <div
+            <StaggerItem
               key={f.title}
               className={cn(
                 "glass group rounded-3xl p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl",
@@ -284,16 +287,16 @@ export default function HomePage() {
               <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
                 {f.copy}
               </p>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerGroup>
       </section>
 
       {/* ---------- HOW IT WORKS ---------- */}
       <section className="mt-20 sm:mt-28">
-        <div className="grid gap-10 sm:grid-cols-3">
+        <StaggerGroup className="grid gap-10 sm:grid-cols-3" amount={0.2}>
           {STEPS.map((s) => (
-            <div key={s.n} className="relative">
+            <StaggerItem key={s.n} className="relative">
               <span
                 aria-hidden
                 className="ghost-text font-display block text-[clamp(4rem,9vw,7rem)] font-black leading-none"
@@ -304,9 +307,9 @@ export default function HomePage() {
               <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
                 {s.copy}
               </p>
-            </div>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerGroup>
       </section>
 
       {/* ---------- ARCHETYPES ---------- */}
@@ -323,11 +326,14 @@ export default function HomePage() {
             </Link>
           </Button>
         </div>
-        <div className="mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 [scrollbar-width:thin]">
+        <StaggerGroup
+          className="mt-8 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-3 [scrollbar-width:thin]"
+          amount={0.2}
+        >
           {SHOWCASE_TYPES.map((code) => {
             const a = ARCHETYPES[code];
             return (
-              <div
+              <StaggerItem
                 key={code}
                 className="glass w-64 shrink-0 snap-start rounded-3xl p-5"
               >
@@ -346,10 +352,10 @@ export default function HomePage() {
                     />
                   ))}
                 </div>
-              </div>
+              </StaggerItem>
             );
           })}
-        </div>
+        </StaggerGroup>
       </section>
 
       {/* ---------- PERSONALIZED RADAR ---------- */}

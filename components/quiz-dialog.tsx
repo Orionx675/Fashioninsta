@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -46,7 +47,7 @@ export function QuizDialog({
         if (!o) reset();
       }}
     >
-      <DialogContent className="glass-strong sm:max-w-md">
+      <DialogContent className="glass-strong overflow-hidden sm:max-w-md">
         <DialogHeader>
           <DialogTitle className="font-display text-xl">
             {done ? "Your style personality" : "Style quiz"}
@@ -61,40 +62,68 @@ export function QuizDialog({
         {!done ? (
           <div className="space-y-4">
             <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/60">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-sky-400 to-indigo-400 transition-all duration-300"
-                style={{ width: `${(step / QUIZ.length) * 100}%` }}
+              <motion.div
+                className="h-full rounded-full bg-gradient-to-r from-sky-400 to-indigo-400"
+                initial={false}
+                animate={{ width: `${(step / QUIZ.length) * 100}%` }}
+                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
               />
             </div>
-            <p className="text-base font-semibold leading-snug">
-              {QUIZ[step].question}
-            </p>
-            <div className="space-y-2">
-              {QUIZ[step].options.map((o, i) => (
-                <button
-                  key={o.label}
-                  onClick={() => pick(i)}
-                  className="w-full rounded-2xl border border-white/70 bg-white/60 px-4 py-3 text-left text-sm font-medium transition-all hover:border-primary/40 hover:bg-white hover:shadow-md"
-                >
-                  {o.label}
-                </button>
-              ))}
-            </div>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={step}
+                initial={{ opacity: 0, x: 36 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -36, transition: { duration: 0.15 } }}
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                className="space-y-4"
+              >
+                <p className="text-base font-semibold leading-snug">
+                  {QUIZ[step].question}
+                </p>
+                <div className="space-y-2">
+                  {QUIZ[step].options.map((o, i) => (
+                    <motion.button
+                      key={o.label}
+                      whileTap={{ scale: 0.97 }}
+                      onClick={() => pick(i)}
+                      className="w-full cursor-pointer rounded-2xl border border-white/70 bg-white/60 px-4 py-3 text-left text-sm font-medium transition-all duration-200 hover:border-primary/40 hover:bg-white hover:shadow-md"
+                    >
+                      {o.label}
+                    </motion.button>
+                  ))}
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
         ) : (
-          <div className="space-y-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="space-y-4"
+          >
             <div className="rounded-2xl bg-gradient-to-br from-sky-100/80 to-indigo-100/80 p-5 text-center">
-              <p className="font-display text-3xl font-bold tracking-wide ice-text">
+              <motion.p
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.12, duration: 0.35 }}
+                className="font-display text-3xl font-bold tracking-wide ice-text"
+              >
                 {result}
-              </p>
+              </motion.p>
               {arch && (
-                <>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.22, duration: 0.35 }}
+                >
                   <p className="mt-1 flex items-center justify-center gap-1.5 text-sm font-semibold">
                     <Sparkles className="size-4 text-indigo-400" />
                     {arch.archetype}
                   </p>
                   <p className="mt-2 text-sm text-muted-foreground">{arch.blurb}</p>
-                </>
+                </motion.div>
               )}
             </div>
             <div className="flex gap-2">
@@ -112,7 +141,7 @@ export function QuizDialog({
                 Use this type
               </Button>
             </div>
-          </div>
+          </motion.div>
         )}
       </DialogContent>
     </Dialog>

@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Snowflake } from "lucide-react";
+import { motion } from "motion/react";
+import { SPRING } from "@/components/motion";
 import { cn } from "@/lib/utils";
 
 const LINKS = [
@@ -34,13 +36,20 @@ export function Navbar() {
                 key={l.href}
                 href={l.href}
                 className={cn(
-                  "whitespace-nowrap rounded-xl px-2.5 py-1.5 text-[13px] font-medium transition-colors sm:px-3 sm:text-sm",
+                  "relative whitespace-nowrap rounded-xl px-2.5 py-1.5 text-[13px] font-medium transition-colors sm:px-3 sm:text-sm",
                   active
-                    ? "bg-primary text-primary-foreground shadow-sm"
+                    ? "text-primary-foreground"
                     : "text-foreground/70 hover:bg-white/60 hover:text-foreground"
                 )}
               >
-                {l.label}
+                {active && (
+                  <motion.span
+                    layoutId="nav-active-pill"
+                    className="absolute inset-0 rounded-xl bg-primary shadow-sm"
+                    transition={SPRING}
+                  />
+                )}
+                <span className="relative z-10">{l.label}</span>
               </Link>
             );
           })}
