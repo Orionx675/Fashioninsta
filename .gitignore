@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Agent skill assets (installed locally via nextlevelbuilder/ui-ux-pro-max-skill)
+/.claude/skills/

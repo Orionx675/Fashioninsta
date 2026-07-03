@@ -11,7 +11,8 @@ import {
 import { CATALOG } from "./catalog";
 import type { BackupFile, Item, Outfit, Profile } from "./types";
 
-const KEY = "icy-store-v1";
+const KEY = "icy-store-v2";
+const LEGACY_KEYS = ["icy-store-v1"];
 
 interface Persisted {
   profile: Profile | null;
@@ -41,6 +42,21 @@ function load(): Persisted {
     if (raw) {
       const parsed = JSON.parse(raw) as Persisted;
       if (Array.isArray(parsed.items)) return parsed;
+    }
+    // Migrate from an older store version: keep the user's profile, outfits,
+    // and own items, but refresh catalog entries (fixes stale image URLs).
+    for (const legacyKey of LEGACY_KEYS) {
+      const legacyRaw = localStorage.getItem(legacyKey);
+      if (!legacyRaw) continue;
+      const legacy = JSON.parse(legacyRaw) as Persisted;
+      if (!Array.isArray(legacy.items)) continue;
+      const migrated: Persisted = {
+        profile: legacy.profile ?? null,
+        items: [...legacy.items.filter((i) => i.source === "user"), ...CATALOG],
+        outfits: Array.isArray(legacy.outfits) ? legacy.outfits : [],
+      };
+      localStorage.removeItem(legacyKey);
+      return migrated;
     }
   } catch {
     // corrupted storage — fall through to fresh state
